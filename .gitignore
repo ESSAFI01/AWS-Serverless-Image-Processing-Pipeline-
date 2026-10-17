@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+output/
+.aws/
+.env
+.env.*
+*.tfstate
+*.tfstate.*
+.terraform/
+build/
+*.tfvars
+*.tfplan
+crash.log
+docs/architecture.png

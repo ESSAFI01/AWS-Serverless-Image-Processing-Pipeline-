@@ -1,0 +1,6 @@
+# Example values only. No credentials belong here.
+aws_region        = "eu-west-3"
+project_name      = "graduation-images"
+bucket_suffix     = "replace123"
+enable_processing = false
+enable_delivery   = false

@@ -1,0 +1,1 @@
+package-placeholder.txt is used only for file hashing and file-existence checks in mocked Terraform plans. The mocked provider never uploads it. It is not a deployable archive. Real application and layer ZIPs are built under build/.

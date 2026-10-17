@@ -1,0 +1,1 @@
+Terraform mock-provider hash fixture only. This is not a deployable Lambda ZIP.
