@@ -203,58 +203,48 @@ the CloudFront bucket policy.
   after 1 day. CloudFront can cache an object for up to another day. force_destroy
   is false, so Terraform does not automatically empty buckets during destruction.
 
-## Free plan and deployment boundary
+## Cost management
 
-The required services are listed by AWS as available in the Free plan experience;
-see [the documented review](docs/free-plan-review.md) for primary sources and
-selected features. Availability is different from unlimited free use. Resources
-can consume credits, and resource limits are not a billing cap.
+The demonstration uses small provisioned capacity, short log retention, and S3
+lifecycle rules to limit retained data. Eligible AWS usage can consume Free plan
+credits; these settings are not a billing cap.
 
-Before deployment, the user confirmed the Free plan with USD 100 remaining credits
-and 154 days remaining. Credit balance after usage has not been rechecked. The
-project was deployed without account plan upgrades, paid-only activation,
-Organizations, or Control Tower. Preserve the no-bank-charges requirement and
-remove the demo resources after recording evidence.
+See the [service eligibility review](docs/free-plan-review.md) and
+[cleanup instructions](docs/cleanup.md). Remove the demo resources when they
+are no longer needed. Paid-only features and account upgrades are outside the
+scope of this project.
 
-## Evidence and submission status
+## Verification results
 
-See [validation results](docs/validation.md) for the precise scope of completed
-checks and their limits. [Live evidence](docs/live-demo.md) records the deployed
-workflow, metadata and image results. The image links expire with the demo
-lifecycle or cleanup; a recorded demonstration remains useful after teardown.
+- Terraform validation and the mocked infrastructure test passed.
+- All 36 application tests passed in the Lambda Linux Python 3.12.15 runtime.
+- Eight additional API-client tests passed locally.
+- The live authenticated upload, presigned S3 POST, status lookup, and CloudFront
+  image downloads passed. Unsigned API requests were rejected.
 
-[Infrastructure details](infra/README.md) · [Free plan review](docs/free-plan-review.md)
+[Validation details](docs/validation.md) · [Live demonstration evidence](docs/live-demo.md)
+· [Infrastructure details](infra/README.md)
 
-## Public repository
+The saved JPEG samples and test report remain in the repository after cleanup.
+Live image URLs expire when their objects expire or the demonstration is removed.
 
-Target: https://github.com/ESSAFI01/AWS-Serverless-Image-Processing-Pipeline-
+## Run the live API demonstration
 
-The initial project is published. For a fresh, empty-repository setup, the helper
-below publishes the selected project files. It does not update an existing Git
-checkout; use normal Git commits and pushes for subsequent changes:
-
-    .\.venv\Scripts\python.exe scripts/publish_project.py
-
-The helper requires your own Git author configuration and normal GitHub Git
-authentication. It checks that the remote is still empty, stages only the explicit
-source-file list, commits, and pushes without force. It stops rather than merging
-or replacing existing repository history. No password or token is placed in the
-script. A clean source bundle is also generated locally as build/project-source.zip.
-
-## Verify the live upload API
-
-The optional client uses your existing AWS profile to sign execute-api requests
-in memory. It never prints signing headers, temporary credentials, or signed form
-fields. It uploads exactly one image, polls job status for up to 90 seconds,
-verifies CloudFront JPEGs, and saves safe results to build/live-api-result.json.
-It does not change infrastructure or subscribe external SNS recipients.
+After deploying your own copy of the infrastructure, run these commands from the
+project root in PowerShell:
 
     .\.venv\Scripts\python.exe -m pip install "boto3[crt]"
-    .\.venv\Scripts\python.exe scripts/live_api_demo.py --api-url https://ug195emspc.execute-api.eu-west-3.amazonaws.com
+    .\.venv\Scripts\python.exe demo.py
+    $projectApiUrl = terraform '-chdir=infra' output -raw api_url
+    .\.venv\Scripts\python.exe scripts/live_api_demo.py --api-url $projectApiUrl
 
-Use --profile with an existing named profile if needed. The calling identity
-needs execute-api:Invoke for these routes. No new access keys are required by
-the client. The client dependency is local only; Lambda ZIPs do not change.
-Eight offline client tests can run without boto3 or AWS access:
+The client uses an existing AWS profile with execute-api:Invoke permission.
+Use --profile to select a named profile. It uploads one image, polls its job
+status, verifies both CloudFront JPEGs, and saves a result report under build/.
+Credentials and signed upload form fields are not printed or saved in that report.
+
+To run the client's offline tests:
 
     .\.venv\Scripts\python.exe -m unittest -v test_live_api_demo
+
+[Source repository](https://github.com/ESSAFI01/AWS-Serverless-Image-Processing-Pipeline-)

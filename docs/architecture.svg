@@ -92,7 +92,7 @@
 <rect x="400" y="812" width="6" height="76" fill="#b54278"/>
 <text x="525.0" y="838" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#18273d" text-anchor="middle">SNS topic</text>
 <text x="525.0" y="865" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#4c5c73" text-anchor="middle">Completion / failure events</text>
-<text x="525.0" y="888" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#4c5c73" text-anchor="middle">No subscribers by default</text>
+<text x="525.0" y="888" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="400" fill="#4c5c73" text-anchor="middle">No subscribers configured</text>
 <rect x="720" y="800" width="250" height="100" rx="14" fill="white" stroke="#8b4cc2" stroke-width="2"/>
 <rect x="720" y="812" width="6" height="76" fill="#8b4cc2"/>
 <text x="845.0" y="838" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#18273d" text-anchor="middle">CloudFront</text>
@@ -111,6 +111,6 @@
 <text x="860" y="745" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#425570" text-anchor="start">Private origin</text>
 <polyline points="970,850 1100,850" fill="none" stroke="#61748e" stroke-width="3"/>
 <polygon points="1100,850 1090,844 1090,856" fill="#61748e"/>
-<text x="45" y="957" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#18273d" text-anchor="start">Single AWS Region + global CDN. IAM per role. Processing and CloudFront delivery default to disabled.</text>
-<text x="45" y="984" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#4c5c73" text-anchor="start">Architecture design only: no AWS deployment. API reads status from DynamoDB. Lifecycle expiry is intentional for demo data.</text>
+<text x="45" y="957" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#18273d" text-anchor="start">Deployed in eu-west-3 + global CloudFront. Separate IAM roles. Pillow layer: Linux / Python 3.12.</text>
+<text x="45" y="984" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#4c5c73" text-anchor="start">Live upload, processing, metadata and CDN verified. API also reads DynamoDB status. Demo objects expire by lifecycle.</text>
 </svg>

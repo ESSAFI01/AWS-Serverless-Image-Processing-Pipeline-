@@ -20,19 +20,16 @@ credits. This is a documented service-level compatibility review, not a live
 verification of this specific account's entitlements or remaining credit balance.
 Stop if the console requests an upgrade or activating advanced/paid-only features.
 
-## Account constraint
+## Deployment constraints
 
-The user reports FREE, ACTIVE, USD 100 credits, with a displayed expiration of
-2027-03-18. Treat that date as user-reported; credit expiry and Free plan expiry
-can differ. AWS documents that the Free plan ends at six months or credit
-exhaustion, whichever happens first. Recheck the console before any future
-resource creation, without changing the plan.
+The demonstration was deployed on a Free account plan. Plan upgrades, paid-only
+features, AWS Organizations, and Control Tower are excluded from this project.
+Service eligibility and remaining credits should be checked for the deployment
+account. AWS documents that the Free plan ends at six months or credit exhaustion,
+whichever occurs first; credit expiry and plan expiry can differ.
 
-A small demo deployment was subsequently authorized and completed. Before it,
-the user confirmed the console showed Free plan, USD 100 credits, and 154 days
-remaining. Usage after deployment has not been audited. Never upgrade the account, activate
-paid-only services, join Organizations, or use Control Tower for this project.
-No bank charge guarantee is being inferred from the code's resource settings.
+Resource settings do not guarantee a fixed bill or unlimited free usage. Keep
+test workloads small and remove the demonstration when finished.
 
 ## Configuration choices
 
@@ -55,8 +52,8 @@ estimate. The current local tests do not generate AWS resource usage.
 
 ## Account concurrency preflight
 
-The user checked Lambda account settings in eu-west-3 and reported total and
-unreserved concurrency of 10. The configuration therefore uses -1 (unreserved)
+The deployment account had a regional Lambda quota of 10 total and 10 unreserved
+concurrent executions in eu-west-3. The configuration therefore uses -1 (unreserved)
 for all three functions, rather than reserving capacity. The shared account limit
 still applies; SQS dispatch is limited to two concurrent invocations, but this
 does not cap the number of workflows in progress or reserve worker capacity.
