@@ -1,14 +1,16 @@
 # Serverless Image Processing Pipeline
 
-A practical AWS project for Solutions Architect - Associate certification preparation.
-This repository implements the image-processing architecture described in the
-project brief using infrastructure as code, Python, and mocked AWS integration tests.
+I built this serverless image processing pipeline as part of my preparation for
+the AWS Certified Solutions Architect - Associate certification. I used Python
+for image processing and Terraform to define the AWS infrastructure. My goal was
+to practice event-driven architecture, service integration, and least-privilege IAM.
 
-**Status: deployed and verified end to end in AWS (2026-10-17).** The live
-IAM-authenticated API upload, presigned S3 POST, processing workflow, metadata
-lookup, and CloudFront JPEG downloads all passed. Unsigned API requests were
-rejected. All 36 application tests pass in the Lambda Linux Python 3.12.15 image,
-and all 44 tests (including the client checks) pass locally.
+**Status: built, deployed, tested, and cleaned up on October 17, 2026.**
+I verified the complete pipeline on AWS, including authenticated API uploads,
+image processing, metadata lookup, and CloudFront delivery. After testing, I
+removed all 43 Terraform-managed resources and checked that the Terraform state
+was empty. The live demo URLs are now offline; the code, diagram, test report,
+and sample images remain in this repository.
 
 ## Solution architecture
 
@@ -37,12 +39,13 @@ and all 44 tests (including the client checks) pass locally.
    The output bucket stays private; the CloudFront policy permits processed/* only.
 
 Processing and CloudFront delivery default to disabled in reusable Terraform.
-Both were explicitly enabled for this demonstration. API Gateway requires IAM
-authentication. See [live demonstration evidence](docs/live-demo.md).
+I enabled both for the live test, then disabled them before removing the demo
+infrastructure. API Gateway requires IAM authentication. See my
+[live demonstration evidence](docs/live-demo.md).
 
-## Project brief coverage
+## What I implemented
 
-| Brief requirement | Implementation |
+| Component | Implementation |
 |---|---|
 | Source and destination S3 | Private buckets, ownership controls, AES256 encryption, source notifications |
 | SQS and DLQ | Standard queue, 180-second visibility, maxReceiveCount 5, 14-day DLQ retention |
@@ -60,8 +63,9 @@ authentication. See [live demonstration evidence](docs/live-demo.md).
 
 ## Demonstration result
 
-The API-driven job completed with a 1024 × 683 main JPEG and a 256 × 171
-thumbnail. These checked-in samples preserve the result after AWS cleanup:
+I uploaded a sample image through the authenticated API and verified that the
+job completed with a 1024 × 683 main JPEG and a 256 × 171 thumbnail. I saved
+these results before deleting the AWS resources:
 
 ![Watermarked thumbnail](docs/evidence/thumbnail.jpg)
 
@@ -205,33 +209,42 @@ the CloudFront bucket policy.
 
 ## Cost management
 
-The demonstration uses small provisioned capacity, short log retention, and S3
-lifecycle rules to limit retained data. Eligible AWS usage can consume Free plan
-credits; these settings are not a billing cap.
+I used small provisioned capacity, short log retention, and S3 lifecycle rules
+to limit usage during testing. I kept the account on the AWS Free plan and did
+not enable paid-only features or upgrade the account. Free plan credits can be
+consumed by eligible usage; resource limits are not a billing cap.
 
-See the [service eligibility review](docs/free-plan-review.md) and
-[cleanup instructions](docs/cleanup.md). Remove the demo resources when they
-are no longer needed. Paid-only features and account upgrades are outside the
-scope of this project.
+After saving the demonstration evidence, I emptied the demo buckets and used
+Terraform to remove all 43 project resources. I verified that `terraform state
+list` returned no resources. This cleanup covers this project, not other
+resources that may exist in the AWS account.
+
+The [service eligibility review](docs/free-plan-review.md) documents my service
+choices, and the [cleanup runbook](docs/cleanup.md) describes the removal steps.
 
 ## Verification results
 
+I checked the implementation locally and in AWS:
+
 - Terraform validation and the mocked infrastructure test passed.
 - All 36 application tests passed in the Lambda Linux Python 3.12.15 runtime.
-- Eight additional API-client tests passed locally.
+- Eight additional API-client tests passed locally, for 44 offline tests in total.
 - The live authenticated upload, presigned S3 POST, status lookup, and CloudFront
-  image downloads passed. Unsigned API requests were rejected.
+  image downloads passed. I also verified that unsigned API requests were rejected.
+- Cleanup removed all 43 project resources, and the Terraform state was empty.
 
 [Validation details](docs/validation.md) · [Live demonstration evidence](docs/live-demo.md)
 · [Infrastructure details](infra/README.md)
 
-The saved JPEG samples and test report remain in the repository after cleanup.
-Live image URLs expire when their objects expire or the demonstration is removed.
+I kept the JPEG samples and test report in the repository so the results can
+still be reviewed after cleanup. The original AWS API and CloudFront URLs are
+no longer available.
 
 ## Run the live API demonstration
 
-After deploying your own copy of the infrastructure, run these commands from the
-project root in PowerShell:
+The commands below are for a new deployment; my demo infrastructure has been
+removed. After deploying your own copy and enabling processing and delivery,
+run these commands from the project root in PowerShell:
 
     .\.venv\Scripts\python.exe -m pip install "boto3[crt]"
     .\.venv\Scripts\python.exe demo.py
