@@ -70,7 +70,7 @@ def arrow(points, label=None, label_xy=None, dashed=False):
 
 
 text(45, 25, "Serverless Image Processing Pipeline", 34, bold=True)
-text(45, 73, "AWS Solutions Architect - Associate | Graduation Project 2", 20, fill="#4c5c73")
+text(45, 73, "AWS Solutions Architect - Associate | Serverless Image Processing", 20, fill="#4c5c73")
 node((40,140,200,240), "Learner", ["IAM-signed client"], "#61748e")
 node((270,140,490,240), "API Gateway", ["HTTP API / AWS_IAM", "Upload + job status"], "#8b4cc2")
 node((560,140,800,240), "API Lambda", ["5-minute upload form", "Unique upload key"], "#d57a13")

@@ -1,6 +1,6 @@
 # Serverless Image Processing Pipeline
 
-Graduation Project 2 for an AWS Solutions Architect - Associate training program.
+A practical AWS project for Solutions Architect - Associate certification preparation.
 This repository implements the image-processing architecture described in the
 project brief using infrastructure as code, Python, and mocked AWS integration tests.
 

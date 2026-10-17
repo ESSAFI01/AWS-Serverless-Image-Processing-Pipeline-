@@ -3,7 +3,7 @@
 <desc id="desc">IAM authenticated uploads to S3, SQS dispatch to a Standard Step Functions workflow, a Pillow Lambda layer, metadata in DynamoDB, notifications through SNS, and private S3 delivery through CloudFront.</desc>
 <rect width="1400" height="1000" fill="#f3f6fb"/>
 <text x="45" y="59" font-family="Segoe UI,Arial,sans-serif" font-size="34" font-weight="700" fill="#18273d" text-anchor="start">Serverless Image Processing Pipeline</text>
-<text x="45" y="93" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#4c5c73" text-anchor="start">AWS Solutions Architect - Associate | Graduation Project 2</text>
+<text x="45" y="93" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="400" fill="#4c5c73" text-anchor="start">AWS Solutions Architect - Associate | Serverless Image Processing</text>
 <rect x="40" y="140" width="160" height="100" rx="14" fill="white" stroke="#61748e" stroke-width="2"/>
 <rect x="40" y="152" width="6" height="76" fill="#61748e"/>
 <text x="120.0" y="178" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="700" fill="#18273d" text-anchor="middle">Learner</text>
