@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import socket
+import sys
+from types import ModuleType
 import unittest
 from unittest.mock import Mock, patch
 from urllib.parse import quote_plus
@@ -138,6 +140,21 @@ class WorkflowTests(unittest.TestCase):
     def test_unknown_action_is_rejected(self):
         with self.assertRaises(ValueError):
             self.stage("erase")
+
+    def test_s3_presigner_uses_explicit_regional_virtual_endpoint(self):
+        common._clients.pop("s3")
+        sdk = ModuleType("boto3")
+        sdk.client = Mock(return_value=self.s3)
+        config_module = ModuleType("botocore.config")
+        config_module.Config = Mock()
+        with patch.dict(sys.modules, {"boto3": sdk, "botocore.config": config_module}), patch.dict(
+            os.environ, {"AWS_REGION": "eu-west-3"}
+        ):
+            self.assertIs(common.client("s3"), self.s3)
+        config_module.Config.assert_called_once_with(signature_version="s3v4",
+                                                     s3={"addressing_style": "virtual"})
+        sdk.client.assert_called_once_with("s3", region_name="eu-west-3",
+            endpoint_url="https://s3.eu-west-3.amazonaws.com", config=config_module.Config.return_value)
 
     def test_dispatch_starts_workflow_with_decoded_key(self):
         result = workflow_starter.lambda_handler({"Records": [self.message()]}, None)

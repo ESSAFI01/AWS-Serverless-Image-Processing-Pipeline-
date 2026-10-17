@@ -16,7 +16,15 @@ def client(service):
         import boto3
         if service == "s3":
             from botocore.config import Config
-            _clients[service] = boto3.client(service, config=Config(signature_version="s3v4"))
+            region = (os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION")
+                      or boto3.session.Session().region_name)
+            if not region:
+                raise ValueError("An AWS Region is required for the S3 client")
+            # Explicit regional endpoint avoids global-endpoint redirects for new buckets.
+            _clients[service] = boto3.client(
+                service, region_name=region, endpoint_url=f"https://s3.{region}.amazonaws.com",
+                config=Config(signature_version="s3v4", s3={"addressing_style": "virtual"}),
+            )
         else:
             _clients[service] = boto3.client(service)
     return _clients[service]

@@ -123,7 +123,7 @@ resource "aws_lambda_function" "processor" {
   source_code_hash               = fileexists(local.lambda_zip) ? filebase64sha256(local.lambda_zip) : null
   timeout                        = 30
   memory_size                    = 128
-  reserved_concurrent_executions = 2
+  reserved_concurrent_executions = -1
   environment {
     variables = {
       SOURCE_BUCKET      = aws_s3_bucket.images["input"].id
@@ -151,7 +151,7 @@ resource "aws_lambda_function" "worker" {
   layers                         = [aws_lambda_layer_version.pillow.arn]
   timeout                        = 45
   memory_size                    = 512
-  reserved_concurrent_executions = 2
+  reserved_concurrent_executions = -1
   environment {
     variables = {
       SOURCE_BUCKET          = aws_s3_bucket.images["input"].id
@@ -174,7 +174,7 @@ resource "aws_lambda_function" "api" {
   source_code_hash               = fileexists(local.lambda_zip) ? filebase64sha256(local.lambda_zip) : null
   timeout                        = 10
   memory_size                    = 128
-  reserved_concurrent_executions = 2
+  reserved_concurrent_executions = -1
   environment {
     variables = {
       SOURCE_BUCKET  = aws_s3_bucket.images["input"].id

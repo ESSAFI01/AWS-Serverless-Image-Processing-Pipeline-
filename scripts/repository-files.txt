@@ -31,3 +31,10 @@ docs/free-plan-review.md
 docs/validation.md
 scripts/publish_project.py
 scripts/repository-files.txt
+scripts/live_api_demo.py
+test_live_api_demo.py
+docs/live-demo.md
+docs/cleanup.md
+docs/evidence/live-api-result.json
+docs/evidence/image.jpg
+docs/evidence/thumbnail.jpg

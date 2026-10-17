@@ -36,8 +36,17 @@ run "pipeline_safety_defaults" {
   }
 
   assert {
-    condition     = aws_lambda_function.processor.reserved_concurrent_executions >= aws_lambda_event_source_mapping.images.scaling_config[0].maximum_concurrency
-    error_message = "Queue concurrency must not exceed reserved function concurrency."
+    condition = alltrue([
+      aws_lambda_function.processor.reserved_concurrent_executions == -1,
+      aws_lambda_function.worker.reserved_concurrent_executions == -1,
+      aws_lambda_function.api.reserved_concurrent_executions == -1
+    ])
+    error_message = "Use unreserved concurrency so the project works with low account quotas."
+  }
+
+  assert {
+    condition     = aws_lambda_event_source_mapping.images.scaling_config[0].maximum_concurrency == 2
+    error_message = "Keep SQS dispatch limited to two concurrent invocations."
   }
 
   assert {

@@ -33,6 +33,10 @@ checks, with no real provider calls.
   staging/processed, writes this table, and publishes only to this SNS topic.
 - CloudFront reads processed/* through signed origin requests. It cannot read
   source images or staging objects. Buckets block public access and disable ACLs.
+- All three functions use unreserved concurrency (-1), compatible with the
+  observed shared account quota of 10. SQS dispatch has a separate maximum of 2.
+  The worker and API share remaining account capacity; they have no per-function
+  reservation or dedicated concurrency cap.
 - DynamoDB has 1 provisioned RCU and WCU; throttling is possible under load.
 - Lifecycle settings intentionally expire demo objects; review the root README
   before any future deployment involving real data.
@@ -48,4 +52,21 @@ See [the validation record](../docs/validation.md) for tested artifact hashes.
 These checks used mocked AWS calls and created no resources. They do not verify
 live IAM permissions, quotas, endpoints, or service integrations in AWS.
 
-Do not run real plan/apply/destroy for this stage. No deployment has been authorized.
+The user subsequently reviewed and applied the low-quota saved plan: 43 resources
+created. A second reviewed plan enabled the event mapping and CloudFront delivery
+with two updates. The live workflow, metadata, and CDN checks succeeded.
+
+A subsequent account preflight found a concurrency limit of 10. The function
+reservations and their mock assertions were updated accordingly. The rerun of
+fmt/validate/test and the replacement plan passed. Do not apply demo.tfplan,
+which was generated before this change. No runtime ZIP rebuild is needed.
+
+The live demo was enabled with bucket_suffix=essafi01demo, enable_processing=true,
+and enable_delivery=true. Reusable defaults remain false, so include these
+values when reviewing plans intended to preserve the running demo. Otherwise
+Terraform will propose disabling it. Do not apply stale saved plans.
+
+The regional S3 presigner correction has also been runtime-tested and deployed.
+The authenticated API-driven upload and status check now pass, including both
+CloudFront JPEG downloads. See the root evidence links. No new infrastructure
+was needed for the fix.

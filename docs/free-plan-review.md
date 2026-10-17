@@ -28,7 +28,9 @@ can differ. AWS documents that the Free plan ends at six months or credit
 exhaustion, whichever happens first. Recheck the console before any future
 resource creation, without changing the plan.
 
-No deployment is currently authorized. Never upgrade the account, activate
+A small demo deployment was subsequently authorized and completed. Before it,
+the user confirmed the console showed Free plan, USD 100 credits, and 154 days
+remaining. Usage after deployment has not been audited. Never upgrade the account, activate
 paid-only services, join Organizations, or use Control Tower for this project.
 No bank charge guarantee is being inferred from the code's resource settings.
 
@@ -36,7 +38,7 @@ No bank charge guarantee is being inferred from the code's resource settings.
 
 | Component | Setting and purpose |
 |---|---|
-| Lambda | No provisioned concurrency or VPC; dispatcher/API 128 MiB, worker 512 MiB; concurrency 2 per function |
+| Lambda | No provisioned concurrency or VPC; dispatcher/API 128 MiB, worker 512 MiB; unreserved concurrency (account quota is shared); SQS dispatch maximum 2 |
 | SQS | Standard queue, batch size 1, bounded dispatch retries, DLQ |
 | Step Functions | Standard, short workflow, bounded task retries, 300-second execution timeout |
 | DynamoDB | Provisioned 1 RCU and 1 WCU; no autoscaling, replicas, backups, or indexes |
@@ -50,3 +52,14 @@ Limits, throttles, lifecycle rules, and a disabled event mapping are not billing
 caps. A disabled mapping can still leave stored objects, queued messages, and
 other resources after a future deployment. Do not deploy under an assumed cost
 estimate. The current local tests do not generate AWS resource usage.
+
+## Account concurrency preflight
+
+The user checked Lambda account settings in eu-west-3 and reported total and
+unreserved concurrency of 10. The configuration therefore uses -1 (unreserved)
+for all three functions, rather than reserving capacity. The shared account limit
+still applies; SQS dispatch is limited to two concurrent invocations, but this
+does not cap the number of workflows in progress or reserve worker capacity.
+Use a few sample images for the demonstration.
+
+[Terraform unreserved setting](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) · [AWS reserved concurrency rules](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html)

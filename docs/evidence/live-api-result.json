@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "timestamp": "2026-10-17T01:01:07.043422+00:00",
+  "api_url": "https://ug195emspc.execute-api.eu-west-3.amazonaws.com",
+  "job_id": "e29144fc3722aa7ca68d11de20410f27d05a764fe2a104efab04293368f03390",
+  "job_status": "COMPLETED",
+  "unsigned_request_rejected": true,
+  "sizes": {
+    "image": [
+      1024,
+      683
+    ],
+    "thumbnail": [
+      256,
+      171
+    ]
+  },
+  "image_url": "https://d3mu8ybos1wp84.cloudfront.net/processed/e29144fc3722aa7ca68d11de20410f27d05a764fe2a104efab04293368f03390/image.jpg",
+  "thumbnail_url": "https://d3mu8ybos1wp84.cloudfront.net/processed/e29144fc3722aa7ca68d11de20410f27d05a764fe2a104efab04293368f03390/thumbnail.jpg",
+  "checks": [
+    "IAM authentication",
+    "presigned S3 POST",
+    "job status API",
+    "CloudFront JPEGs"
+  ]
+}
