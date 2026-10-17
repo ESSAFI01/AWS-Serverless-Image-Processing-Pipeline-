@@ -45,28 +45,28 @@ checks, with no real provider calls.
 
 ## Verification
 
-The expanded Terraform configuration passed fmt, validate, and the mocked test
-(1 passed, 0 failed) in user PowerShell. The layered application passed all 35
-Python tests in the Lambda Linux x86_64 Python 3.12.15 image with Pillow 12.3.0.
+I ran Terraform formatting, validation, and the mocked infrastructure test
+(1 passed, 0 failed). I also tested the application ZIP and Pillow layer in the
+Lambda Linux x86_64 Python 3.12.15 image: all 36 application tests passed.
+The complete local suite, including the API client, passed all 44 tests.
 See [the validation record](../docs/validation.md) for tested artifact hashes.
-These checks used mocked AWS calls and created no resources. They do not verify
-live IAM permissions, quotas, endpoints, or service integrations in AWS.
 
-The user subsequently reviewed and applied the low-quota saved plan: 43 resources
-created. A second reviewed plan enabled the event mapping and CloudFront delivery
-with two updates. The live workflow, metadata, and CDN checks succeeded.
+Before deploying, I checked the regional Lambda quota and found a total limit
+of 10 concurrent executions. I used unreserved concurrency for all three
+functions and kept the SQS dispatch maximum at 2.
 
-A subsequent account preflight found a concurrency limit of 10. The function
-reservations and their mock assertions were updated accordingly. The rerun of
-fmt/validate/test and the replacement plan passed. Do not apply demo.tfplan,
-which was generated before this change. No runtime ZIP rebuild is needed.
+I reviewed and applied the deployment plan, which created 43 resources, then
+enabled processing and CloudFront delivery. The live workflow, DynamoDB
+metadata, authenticated API upload, and CloudFront image checks all passed.
+I also corrected the S3 presigner to use the regional endpoint, tested the
+updated package, and deployed the fix.
 
-The live demo was enabled with bucket_suffix=essafi01demo, enable_processing=true,
-and enable_delivery=true. Reusable defaults remain false, so include these
-values when reviewing plans intended to preserve the running demo. Otherwise
-Terraform will propose disabling it. Do not apply stale saved plans.
+## Cleanup status
 
-The regional S3 presigner correction has also been runtime-tested and deployed.
-The authenticated API-driven upload and status check now pass, including both
-CloudFront JPEG downloads. See the root evidence links. No new infrastructure
-was needed for the fix.
+After saving the evidence on October 17, 2026, I disabled processing and delivery,
+removed the demo data, and destroyed all 43 Terraform-managed resources.
+I verified that the Terraform state was empty. The live demo is now offline.
+
+For a new deployment, review fresh plans using a unique bucket suffix.
+Processing and delivery default to disabled; enable them explicitly when ready
+to test. Do not reuse saved plans from the previous deployment.

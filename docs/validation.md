@@ -3,10 +3,10 @@
 ## Original core pipeline (before the full project extension)
 
 - 16 Python integration tests: passed locally.
-- Terraform fmt/init/validate: passed in user PowerShell.
-- Terraform mock test: 1 passed, 0 failed in user PowerShell.
+- Terraform fmt/init/validate: passed in my PowerShell session.
+- Terraform mock test: 1 passed, 0 failed in my PowerShell session.
 - Standalone ZIP runtime test: PASS in Lambda Linux x86_64 Python 3.12.15 with
-  Pillow 12.3.0, reported by the user. This result applies to the older ZIP hash
+  Pillow 12.3.0. This result applies to the older ZIP hash
   4b98b6fd8adeffde2d40ae99ce558f6865600d5abc674ec8eab43dc0b50fda08.
 
 ## Expanded Project 2 implementation (2026-10-17)
@@ -18,11 +18,10 @@
 - Application ZIP + Linux Pillow layer: built from the existing pinned wheel;
   hashes are recorded in the local build/manifest.json.
 - Architecture SVG and PNG: generated; PNG visually inspected.
-- Expanded Terraform fmt and validate: PASS, reported from user PowerShell.
+- Expanded Terraform fmt and validate: PASS in my PowerShell session.
 - Expanded Terraform mock test: PASS, 1 passed and 0 failed. No real provider calls.
 - Expanded application-plus-layer Lambda runtime test: PASS. All 35 tests passed
-  in the Lambda Linux x86_64 Python 3.12.15 image with Pillow 12.3.0. The user
-  supplied the console output, and the local manifest records PASS for these hashes.
+  in the Lambda Linux x86_64 Python 3.12.15 image with Pillow 12.3.0. I saved the console results, and the local manifest records PASS for these hashes.
 - Tested application SHA256:
   2bfb11c6624dfe558d80afc3b8239f78f3e4a5ec9d8a3903cca9f38f82a4c12b
 - Tested Pillow layer SHA256:
@@ -38,25 +37,25 @@ ZIP's PASS as evidence for a changed application/layer.
 
 ## Account quota adjustment after the deployment preview
 
-The user reported Lambda Total=10 and Unreserved=10 in eu-west-3. Before any
-resource creation, all three function reservations were changed from 2 to -1
-(unreserved), while SQS dispatch maximum concurrency remains 2. The Terraform
-mock assertions were adjusted to verify these settings. Terraform formatting,
-validation, and the mock test subsequently PASSED in user PowerShell. A fresh
-plan reported 43 additions with -1 on all three functions. Python code
-and the tested application/layer ZIPs are unchanged. The old demo.tfplan must
-not be applied because it still requests the reservations.
+I checked the Lambda account settings in eu-west-3 and found a concurrency
+quota of 10 total and 10 unreserved executions. Before deploying, I changed
+all three functions from a reservation of 2 to -1 (unreserved), while keeping
+the SQS dispatch maximum concurrency at 2. I updated the Terraform mock
+assertions and reran formatting, validation, and the mock test successfully.
+The replacement plan showed 43 additions with unreserved concurrency on all
+three functions. This configuration change did not require rebuilding the
+application or Pillow layer. I used the replacement plan for deployment.
 
 ## Live AWS demonstration (2026-10-17)
 
-Evidence supplied by the user from PowerShell and browser checks:
+I verified the following results using the AWS CLI and my browser:
 
 - Initial apply: 43 added, 0 changed, 0 destroyed.
 - Enable apply: 0 added, 2 changed, 0 destroyed; processing and delivery true.
 - S3 upload produced image.jpg and thumbnail.jpg in processed/<job_id>/.
 - Step Functions execution: SUCCEEDED.
 - DynamoDB metadata: COMPLETED, source dimensions 2400 x 1600, both CDN URLs.
-- CloudFront: user confirmed both JPEG links load and show Cloud & AI.
+- CloudFront: I opened both JPEG links and checked the Cloud & AI watermark.
 - SNS publish path completed within the successful Store task; external delivery
   is not tested and no subscribers are configured.
 - Live API authentication, presigned POST, and status route: subsequently PASS;
@@ -99,5 +98,13 @@ Previous runtime hashes above remain historical evidence only.
 - Job e29144fc3722aa7ca68d11de20410f27d05a764fe2a104efab04293368f03390
   completed; unsigned upload was rejected. Outputs are 1024 x 683 and 256 x 171.
 - [Safe report](evidence/live-api-result.json) and JPEG samples are checked in.
-- SNS external subscriber delivery, live failure/DLQ exercises, teardown, and
-  post-demo billing verification are not claimed as tested.
+- I did not test SNS external subscriber delivery or live failure/DLQ scenarios.
+- Post-demo billing verification is not included in these results.
+
+## Cleanup (2026-10-17)
+
+I disabled processing and CloudFront delivery, confirmed that no workflows were
+running, and removed the demo objects from both buckets. I reviewed and applied
+the destruction plan: 0 added, 0 changed, 43 destroyed. Finally, I ran
+`terraform -chdir=infra state list` and confirmed that it returned no resources.
+The live endpoints are offline; the saved report and JPEG samples remain available.

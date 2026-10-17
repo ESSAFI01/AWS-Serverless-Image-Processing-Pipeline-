@@ -1,9 +1,13 @@
 # Demo cleanup runbook
 
-Cleanup has not been performed. These commands delete the project resources and
-demo data. Use them only after saving submission evidence and choosing to remove
-the running demonstration. Keep Terraform state locally until cleanup is complete;
-never upload state, saved plans, credentials, or signed upload fields to GitHub.
+**Cleanup completed on October 17, 2026.** I saved the demo evidence, disabled
+processing and delivery, confirmed that no workflows were running, and removed
+the demo objects. Terraform then removed all 43 project resources. I ran
+`terraform -chdir=infra state list` and confirmed that the output was empty.
+
+The commands below document the cleanup procedure for a future deployment.
+Keep Terraform state locally until cleanup is complete; never upload state,
+saved plans, credentials, or signed upload fields to GitHub.
 
 ## 1. Save evidence
 
@@ -68,6 +72,6 @@ project IAM roles/policies tracked in this state:
 After a successful full cleanup, no managed project resources should remain in
 state. Also check the AWS console for remaining project resources and billing
 usage/credits; billing views can lag. The Free account plan must remain unchanged.
-Update the README to say the live demo was removed while preserving its evidence.
+Record the cleanup status in the README while preserving the demo evidence.
 If destruction fails, retain the state and resolve the error rather than deleting
 state files or force-removing unrelated resources.
